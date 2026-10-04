@@ -221,6 +221,10 @@
   // Sound Effects
   const SFX = {
     click: () => playSynthesizedTone(587.33, 'triangle', 0.1, 0.1), // D5
+    heart: () => {
+      playSynthesizedTone(523.25, 'sine', 0.15, 0.12);
+      setTimeout(() => playSynthesizedTone(659.25, 'sine', 0.22, 0.14), 70);
+    },
     cardAttach: () => {
       playSynthesizedTone(523.25, 'triangle', 0.18, 0.12, 0.02); // C5
       setTimeout(() => playSynthesizedTone(659.25, 'sine', 0.22, 0.14, 0.02), 80); // E5
@@ -288,61 +292,75 @@
     }
   };
 
-  // Dreamy Ambient Romantic Birthday Melody
-  let melodyTimer = null;
-  const romanticMelody = [
-    { f: 261.63, d: 350 }, { f: 261.63, d: 350 }, { f: 293.66, d: 700 }, { f: 261.63, d: 700 }, { f: 349.23, d: 700 }, { f: 329.63, d: 1100 },
-    { f: 261.63, d: 350 }, { f: 261.63, d: 350 }, { f: 293.66, d: 700 }, { f: 261.63, d: 700 }, { f: 392.00, d: 700 }, { f: 349.23, d: 1100 },
-    { f: 261.63, d: 350 }, { f: 261.63, d: 350 }, { f: 523.25, d: 700 }, { f: 440.00, d: 700 }, { f: 349.23, d: 700 }, { f: 329.63, d: 700 }, { f: 293.66, d: 1100 },
-    { f: 466.16, d: 350 }, { f: 466.16, d: 350 }, { f: 440.00, d: 700 }, { f: 349.23, d: 700 }, { f: 392.00, d: 700 }, { f: 349.23, d: 1300 }
-  ];
-  let melIdx = 0;
-
-  function playMelodyLoop() {
-    if (!state.musicPlaying || state.isMuted) return;
-    const note = romanticMelody[melIdx];
-    playSynthesizedTone(note.f, 'sine', (note.d / 1000) * 1.3, 0.09, 0.04);
-    melIdx = (melIdx + 1) % romanticMelody.length;
-    melodyTimer = setTimeout(playMelodyLoop, note.d + 100);
+  // Background Song Engine (WhatsApp Audio)
+  function getBgAudioElement() {
+    let audio = document.getElementById("bgMusicAudio");
+    if (!audio) {
+      audio = new Audio();
+      audio.id = "bgMusicAudio";
+      audio.loop = true;
+      audio.src = encodeURI("./assets/WhatsApp Audio 2026-10-04 at 8.43.41 PM.mpeg");
+      document.body.appendChild(audio);
+    }
+    audio.loop = true;
+    audio.volume = 0.75;
+    return audio;
   }
 
   function startMusic() {
-    stopMusic();
     state.musicPlaying = true;
     state.isMuted = false;
     const btn = document.getElementById("audioToggleBtn");
     if (btn) {
       btn.innerHTML = "🎵";
       btn.classList.add("playing");
-      btn.setAttribute("title", "Sound On (Click to Mute)");
+      btn.setAttribute("title", "Song Playing (Click to Mute)");
     }
-    playMelodyLoop();
+
+    const audio = getBgAudioElement();
+    if (audio) {
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch((err) => {
+          console.log("Audio playback waiting for user gesture:", err);
+        });
+      }
+    }
   }
 
   function stopMusic() {
     state.musicPlaying = false;
-    if (melodyTimer) {
-      clearTimeout(melodyTimer);
-      melodyTimer = null;
+    state.isMuted = true;
+    const audio = document.getElementById("bgMusicAudio");
+    if (audio) {
+      audio.pause();
     }
     const btn = document.getElementById("audioToggleBtn");
     if (btn) {
       btn.innerHTML = "🔇";
       btn.classList.remove("playing");
-      btn.setAttribute("title", "Sound Muted (Click to Play)");
+      btn.setAttribute("title", "Song Muted (Click to Play)");
     }
   }
 
   function toggleAudio() {
     initAudioContext();
     if (state.musicPlaying) {
-      state.isMuted = true;
       stopMusic();
     } else {
-      state.isMuted = false;
       startMusic();
     }
   }
+
+  // Auto-resume song on any touch/click if music is supposed to be playing
+  const resumeBgAudioOnGesture = () => {
+    const audio = document.getElementById("bgMusicAudio");
+    if (audio && state.musicPlaying && audio.paused) {
+      audio.play().catch(() => {});
+    }
+  };
+  window.addEventListener("click", resumeBgAudioOnGesture);
+  window.addEventListener("touchstart", resumeBgAudioOnGesture, { passive: true });
 
   /* ========================================================================
      4. STARFIELD & FIREFLIES BACKGROUND (CANVAS)
@@ -969,18 +987,30 @@
     });
   }
 
-  function openLightbox(index) {
-    state.lightboxIndex = index;
+  let activeLightboxItems = memories;
+
+  function openLightboxForSource(items, index) {
+    activeLightboxItems = (items && items.length > 0) ? items : memories;
+    state.lightboxIndex = Math.max(0, Math.min(index, activeLightboxItems.length - 1));
     const modal = document.getElementById("lightboxModal");
     const img = document.getElementById("lightboxImg");
     const cap = document.getElementById("lightboxCaption");
 
     if (modal && img && cap) {
-      img.src = memories[index].image;
-      cap.textContent = memories[index].caption;
+      const item = activeLightboxItems[state.lightboxIndex];
+      img.src = item.image;
+      if (item.desc) {
+        cap.innerHTML = `<strong>${item.caption}</strong><br><span style="font-size:0.9em;opacity:0.85;font-style:italic;">${item.desc}</span>`;
+      } else {
+        cap.textContent = item.caption;
+      }
       modal.classList.add("active");
       SFX.click();
     }
+  }
+
+  function openLightbox(index) {
+    openLightboxForSource(memories, index);
   }
 
   function closeLightbox() {
@@ -989,13 +1019,15 @@
   }
 
   function nextLightbox() {
-    state.lightboxIndex = (state.lightboxIndex + 1) % memories.length;
-    openLightbox(state.lightboxIndex);
+    if (!activeLightboxItems || activeLightboxItems.length === 0) return;
+    state.lightboxIndex = (state.lightboxIndex + 1) % activeLightboxItems.length;
+    openLightboxForSource(activeLightboxItems, state.lightboxIndex);
   }
 
   function prevLightbox() {
-    state.lightboxIndex = (state.lightboxIndex - 1 + memories.length) % memories.length;
-    openLightbox(state.lightboxIndex);
+    if (!activeLightboxItems || activeLightboxItems.length === 0) return;
+    state.lightboxIndex = (state.lightboxIndex - 1 + activeLightboxItems.length) % activeLightboxItems.length;
+    openLightboxForSource(activeLightboxItems, state.lightboxIndex);
   }
 
   function openCustomLightbox(src, caption) {
@@ -1306,6 +1338,150 @@
   }
 
   /* ========================================================================
+     STEP 12: BEST MEMORIES (14-PHOTO SLIDES STREAM) & GRAND BLESSINGS
+     ======================================================================== */
+  let step12Observer = null;
+  let step12MemoriesData = [];
+
+  function initStep12BestMemories() {
+    const cards = document.querySelectorAll(".step12-slide-card");
+    if (!cards || cards.length === 0) return;
+
+    step12MemoriesData = [];
+    cards.forEach((card, idx) => {
+      const img = card.querySelector("img");
+      const caption = card.querySelector(".step12-card-caption");
+      const desc = card.querySelector(".step12-card-desc");
+      const tag = card.querySelector(".step12-card-tag");
+
+      step12MemoriesData.push({
+        image: img ? img.getAttribute("src") : "",
+        caption: caption ? caption.textContent.trim() : `Memory ${idx + 1}`,
+        desc: desc ? desc.textContent.trim() : "",
+        tag: tag ? tag.textContent.trim() : ""
+      });
+
+      // Bind click on card / img box to open lightbox
+      const imgBox = card.querySelector(".step12-img-box");
+      const targetBox = imgBox || card;
+      if (!card.dataset.bound) {
+        card.dataset.bound = "true";
+        targetBox.style.cursor = "pointer";
+        targetBox.addEventListener("click", () => {
+          openLightboxForSource(step12MemoriesData, idx);
+        });
+      }
+    });
+
+    // Animate cards into view
+    // Immediately reveal the first 2 cards smoothly so the top is never blank
+    setTimeout(() => {
+      if (cards[0]) cards[0].classList.add("in-view");
+    }, 150);
+    setTimeout(() => {
+      if (cards[1]) cards[1].classList.add("in-view");
+    }, 400);
+
+    // Setup IntersectionObserver for smooth scroll-in animations
+    if ("IntersectionObserver" in window) {
+      if (step12Observer) step12Observer.disconnect();
+      step12Observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("in-view");
+            }
+          });
+        },
+        {
+          root: null,
+          rootMargin: "0px 0px -40px 0px",
+          threshold: 0.1
+        }
+      );
+
+      cards.forEach((card) => step12Observer.observe(card));
+    }
+
+    // Scroll listener fallback to ensure all cards reveal as user scrolls
+    const checkCardVisibility = () => {
+      if (state.currentStep !== 12) return;
+      const triggerBottom = window.innerHeight * 0.95;
+      cards.forEach((card) => {
+        const top = card.getBoundingClientRect().top;
+        if (top < triggerBottom) {
+          card.classList.add("in-view");
+        }
+      });
+    };
+
+    window.removeEventListener("scroll", checkCardVisibility);
+    window.addEventListener("scroll", checkCardVisibility, { passive: true });
+    setTimeout(checkCardVisibility, 350);
+
+    // Initial celebratory confetti burst
+    triggerConfettiBlast(window.innerWidth / 2, window.innerHeight * 0.25, 30);
+  }
+
+  function resetAndRestartStory() {
+    SFX.click();
+
+    // Reset interactive state
+    state.quizIndex = 0;
+    state.quizScore = 0;
+    state.currentThingIndex = 0;
+    state.candlesBlown = false;
+    state.giftOpened = false;
+    state.letterOpened = false;
+
+    // Reset step 12 cards animation state
+    const cards = document.querySelectorAll(".step12-slide-card");
+    cards.forEach((card) => card.classList.remove("in-view"));
+
+    // Reset cake
+    const flames = document.querySelectorAll(".candle-flame");
+    flames.forEach((f) => f.classList.remove("extinguished"));
+    const prep = document.getElementById("wishPrepArea");
+    const cake = document.getElementById("cakeSceneContainer");
+    const hint = document.getElementById("cakeHintText");
+    const rev = document.getElementById("wishGrantedMsg");
+    const cBtn = document.getElementById("cakeToGiftBtn");
+    if (prep) prep.style.display = "block";
+    if (cake) cake.style.display = "none";
+    if (hint) hint.style.display = "block";
+    if (rev) rev.style.display = "none";
+    if (cBtn) cBtn.style.display = "none";
+
+    // Reset gift
+    const gBox = document.getElementById("giftBoxCube");
+    const gHint = document.getElementById("giftTapHint");
+    const gRev = document.getElementById("giftRevealedArea");
+    if (gBox) {
+      gBox.style.display = "flex";
+      gBox.style.opacity = "1";
+      gBox.style.transform = "none";
+    }
+    if (gHint) gHint.style.display = "block";
+    if (gRev) gRev.style.display = "none";
+
+    // Reset letter
+    const eStage = document.getElementById("envelopeStage");
+    const sheet = document.getElementById("letterSheet");
+    const sig = document.getElementById("letterSignature");
+    const lBtn = document.getElementById("letterToNextBtn");
+    if (eStage) {
+      eStage.style.display = "flex";
+      eStage.style.opacity = "1";
+      eStage.style.transform = "none";
+    }
+    if (sheet) sheet.style.display = "none";
+    if (sig) sig.classList.remove("show");
+    if (lBtn) lBtn.style.display = "none";
+
+    navigateToStep(1);
+  }
+
+  /* ========================================================================
      SECRET EASTER EGG (TAP HEART 5 TIMES)
      ======================================================================== */
   function onHeartIconTapped() {
@@ -1422,7 +1598,33 @@
       letterToNextBtn.addEventListener("click", () => navigateToStep(10));
     }
 
-    // Step 11 Finale Action Buttons
+    // Step 11 Center Beating Heart
+    const finaleHeart = document.getElementById("finaleBeatingHeart");
+    if (finaleHeart) {
+      finaleHeart.addEventListener("click", (e) => {
+        SFX.heart();
+        const rect = finaleHeart.getBoundingClientRect();
+        triggerConfettiBlast(rect.left + rect.width / 2, rect.top + rect.height / 2, 35);
+        if (window.launchCustomFirework) {
+          window.launchCustomFirework(window.innerWidth * 0.3, window.innerHeight * 0.3);
+          setTimeout(() => {
+            window.launchCustomFirework(window.innerWidth * 0.7, window.innerHeight * 0.25);
+          }, 200);
+        }
+      });
+    }
+
+    // Step 11 to Step 12 Navigation Button
+    const finaleToStep12Btn = document.getElementById("finaleToStep12Btn");
+    if (finaleToStep12Btn) {
+      finaleToStep12Btn.addEventListener("click", () => {
+        SFX.success();
+        triggerConfettiBlast(window.innerWidth / 2, window.innerHeight / 2, 40);
+        navigateToStep(12);
+      });
+    }
+
+    // Step 11 Legacy Buttons (if present)
     const launchFwBtn = document.getElementById("launchFinaleFwBtn");
     if (launchFwBtn) {
       launchFwBtn.addEventListener("click", () => {
@@ -1447,49 +1649,31 @@
 
     const reliveBtn = document.getElementById("reliveJourneyBtn");
     if (reliveBtn) {
-      reliveBtn.addEventListener("click", () => {
-        // Reset interactive state
-        state.quizIndex = 0;
-        state.quizScore = 0;
-        state.currentThingIndex = 0;
-        state.candlesBlown = false;
-        state.giftOpened = false;
-        state.letterOpened = false;
+      reliveBtn.addEventListener("click", resetAndRestartStory);
+    }
 
-        // Reset cake
-        const flames = document.querySelectorAll(".candle-flame");
-        flames.forEach(f => f.classList.remove("extinguished"));
-        const prep = document.getElementById("wishPrepArea");
-        const cake = document.getElementById("cakeSceneContainer");
-        const hint = document.getElementById("cakeHintText");
-        const rev = document.getElementById("wishGrantedMsg");
-        const cBtn = document.getElementById("cakeToGiftBtn");
-        if (prep) prep.style.display = "block";
-        if (cake) cake.style.display = "none";
-        if (hint) hint.style.display = "block";
-        if (rev) rev.style.display = "none";
-        if (cBtn) cBtn.style.display = "none";
-
-        // Reset gift
-        const gBox = document.getElementById("giftBoxCube");
-        const gHint = document.getElementById("giftTapHint");
-        const gRev = document.getElementById("giftRevealedArea");
-        if (gBox) { gBox.style.display = "flex"; gBox.style.opacity = "1"; gBox.style.transform = "none"; }
-        if (gHint) gHint.style.display = "block";
-        if (gRev) gRev.style.display = "none";
-
-        // Reset letter
-        const eStage = document.getElementById("envelopeStage");
-        const sheet = document.getElementById("letterSheet");
-        const sig = document.getElementById("letterSignature");
-        const lBtn = document.getElementById("letterToNextBtn");
-        if (eStage) { eStage.style.display = "flex"; eStage.style.opacity = "1"; eStage.style.transform = "none"; }
-        if (sheet) sheet.style.display = "none";
-        if (sig) sig.classList.remove("show");
-        if (lBtn) lBtn.style.display = "none";
-
-        navigateToStep(1);
+    // Step 12 Fireworks Celebration Button
+    const step12FireworksBtn = document.getElementById("step12FireworksBtn");
+    if (step12FireworksBtn) {
+      step12FireworksBtn.addEventListener("click", () => {
+        SFX.success();
+        triggerConfettiBlast(window.innerWidth / 2, window.innerHeight * 0.35, 75);
+        for (let i = 0; i < 8; i++) {
+          setTimeout(() => {
+            const x = Math.random() * (window.innerWidth * 0.8) + window.innerWidth * 0.1;
+            const y = Math.random() * (window.innerHeight * 0.5) + window.innerHeight * 0.1;
+            if (window.launchCustomFirework) {
+              window.launchCustomFirework(x, y);
+            }
+          }, i * 200);
+        }
       });
+    }
+
+    // Step 12 Restart Journey Button
+    const step12RestartBtn = document.getElementById("step12RestartBtn");
+    if (step12RestartBtn) {
+      step12RestartBtn.addEventListener("click", resetAndRestartStory);
     }
 
     // Lightbox Controls
@@ -1530,9 +1714,14 @@
       closeEasterBtn.addEventListener("click", closeEasterEgg);
     }
 
-    // Tap Anywhere on Final Sky to Launch Custom Fireworks
+    // Tap Anywhere on Sky (Step 11 or Step 12) to Launch Custom Fireworks
     window.addEventListener("click", (e) => {
-      if (state.currentStep === 11 && !e.target.closest("button") && !e.target.closest(".top-header")) {
+      if ((state.currentStep === 11 || state.currentStep === 12) &&
+          !e.target.closest("button") &&
+          !e.target.closest(".top-header") &&
+          !e.target.closest(".step12-slide-card") &&
+          !e.target.closest(".step12-wishes-card") &&
+          !e.target.closest(".lightbox-modal")) {
         if (window.launchCustomFirework) {
           window.launchCustomFirework(e.clientX, e.clientY);
         }
