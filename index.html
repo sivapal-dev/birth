@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+  <meta name="description" content="A cinematic, personal birthday surprise story created especially for Najiya." />
+  <meta name="theme-color" content="#08040d" />
+  <title>A Story For NAJIYA ❤️ | Happy Birthday</title>
+
+  <!-- Favicon -->
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>" />
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="./style.css" />
+</head>
+
+<body>
+
+  <!-- Fixed Cinematic Photo Background Layer (img16.jpeg) -->
+  <div class="cinematic-bg-photo" id="cinematicBgPhoto"></div>
+  <div class="cinematic-bg-overlay"></div>
+
+  <!-- Atmospheric Background Canvas Layers -->
+  <canvas id="starCanvas"></canvas>
+  <canvas id="fireworksCanvas"></canvas>
+  <div class="vignette-overlay"></div>
+
+  <!-- Top Floating Header: Step Counter, Easter Egg & Audio -->
+  <header class="top-header" id="topHeader">
+    <div class="step-indicator-badge">
+      <span class="dot"></span>
+      <span id="stepCounterText">01 / 12</span>
+    </div>
+
+    <div class="top-controls">
+      <!-- Secret Easter Egg Trigger Heart -->
+      <button class="control-btn" id="easterEggHeartBtn" title="A little secret..." aria-label="Secret Heart">
+        ❤️
+      </button>
+
+      <!-- Web Audio Mute / Unmute Control -->
+      <button class="control-btn" id="audioToggleBtn" title="Play Ambient Music" aria-label="Toggle Audio">
+        🔇
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Multi-Step Interactive Viewport -->
+  <main id="appContainer">
+
+    <!-- =====================================================================
+         STEP 1: SECRET INTRO (MYSTERY & CURIOSITY)
+         ===================================================================== -->
+    <section class="step-screen active" id="step1">
+      <div class="intro-container">
+        <h2 class="intro-text-line" id="introLine1">Hey... 👀</h2>
+        <p class="intro-text-line" id="introLine2">I made something for you.</p>
+        <p class="intro-text-line" id="introLine3">It's not just a birthday wish...</p>
+        <p class="intro-text-line accent" id="introLine4">It's a little journey. ✨</p>
+
+        <div class="intro-btn-wrapper" id="introBtnWrapper">
+          <button class="btn-cinematic" id="openSurpriseBtn">
+            <span>OPEN YOUR SURPRISE ✨</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+     STEP 2: PERSONAL BIRTHDAY WISH
+     ===================================================================== -->
+    <section class="step-screen" id="step2">
+      <div class="glass-box birthday-wish-box">
+
+        <span class="invitation-badge">For Someone Special ❤️</span>
+
+        <h1 class="invitation-name person-name-target">
+          NAJIYA
+        </h1>
+
+        <div class="birthday-title">
+          <span>🎂</span>
+          <h2>HAPPY BIRTHDAY</h2>
+          <span>✨</span>
+        </div>
+
+        <div class="invitation-body-text birthday-message">
+          <p>Wishing you the happiest birthday, Najiya! ❤️</p>
+
+          <p>
+            May your day be filled with beautiful smiles,
+            unforgettable moments, and everything that makes you happy.
+          </p>
+
+          <p class="special-line">
+            You deserve a beautiful year ahead. ✨
+          </p>
+        </div>
+
+        <button class="btn-cinematic" id="startJourneyBtn">
+          <span>START YOUR SURPRISE ✨ →</span>
+        </button>
+
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         STEP 3: A FEW MOMENTS — 5-PHOTO AUTO-SCROLL STACKING DECK
+         ===================================================================== -->
+    <section class="step-screen step3-stack-section" id="step3">
+      <div class="step3-stack-wrapper">
+
+        <!-- Top Header & Hint -->
+        <div class="step3-top-header">
+          <span class="step3-badge">✦ OUR LITTLE STORY ✦</span>
+          <h2 class="step3-title">A Few Moments...</h2>
+          <p class="step3-scroll-hint">Scroll down, swipe up, or tap to attach each photo ✨</p>
+        </div>
+
+        <!-- 5-Photo Stacking Deck Container -->
+        <div class="step3-cards-deck" id="step3CardsDeck" title="Scroll down or tap to attach next photo!">
+          <!-- Photo Card 1 (Base card, attached initially) -->
+          <div class="step3-photo-card card-attached" data-index="0" style="--rot: -0.5deg; --order: 10;">
+            <img src="./assets/img1.jpeg" alt="Moment 1" loading="lazy" />
+            <div class="step3-card-glass-tag">
+              <span class="step3-card-num">01 / 05</span>
+              <h4>✦ The Beginning</h4>
+            </div>
+          </div>
+
+          <!-- Photo Card 2 (Slides up from bottom to attach) -->
+          <div class="step3-photo-card" data-index="1" style="--rot: 1.6deg; --order: 20;">
+            <img src="./assets/img2.jpeg" alt="Moment 2" loading="lazy" />
+            <div class="step3-card-glass-tag">
+              <span class="step3-card-num">02 / 05</span>
+              <h4>✦ The Conversations</h4>
+            </div>
+          </div>
+
+          <!-- Photo Card 3 (Slides up from bottom to attach) -->
+          <div class="step3-photo-card" data-index="2" style="--rot: -1.8deg; --order: 30;">
+            <img src="./assets/img3.jpeg" alt="Moment 3" loading="lazy" />
+            <div class="step3-card-glass-tag">
+              <span class="step3-card-num">03 / 05</span>
+              <h4>✦ The Random Moments</h4>
+            </div>
+          </div>
+
+          <!-- Photo Card 4 (Slides up from bottom to attach) -->
+          <div class="step3-photo-card" data-index="3" style="--rot: 1.4deg; --order: 40;">
+            <img src="./assets/img4.jpeg" alt="Moment 4" loading="lazy" />
+            <div class="step3-card-glass-tag">
+              <span class="step3-card-num">04 / 05</span>
+              <h4>✦ The Shared Laughter</h4>
+            </div>
+          </div>
+
+          <!-- Photo Card 5 (Slides up from bottom to attach) -->
+          <div class="step3-photo-card" data-index="4" style="--rot: -0.2deg; --order: 50;">
+            <img src="./assets/img5.jpeg" alt="Moment 5" loading="lazy" />
+            <div class="step3-card-glass-tag">
+              <span class="step3-card-num">05 / 05</span>
+              <h4>✦ The Smile</h4>
+            </div>
+          </div>
+        </div>
+
+        <!-- Floating Story Quote Tray & Controls -->
+        <div class="step3-bottom-tray">
+          <div class="step3-active-quote-box" id="step3QuoteBox">
+            <span class="step3-quote-tag" id="step3QuoteTag">✦ The Beginning</span>
+            <p class="step3-quote-text" id="step3QuoteText">“Some people enter your life unexpectedly...”</p>
+          </div>
+
+          <!-- Navigation Controls: Prev, Dots, Auto-play, Next -->
+          <div class="step3-stack-controls">
+            <button class="step3-btn-arrow" id="step3StackPrevBtn" aria-label="Previous Photo">‹</button>
+            <div class="step3-stack-dots" id="step3StackDots">
+              <span class="step3-s-dot active" data-index="0"></span>
+              <span class="step3-s-dot" data-index="1"></span>
+              <span class="step3-s-dot" data-index="2"></span>
+              <span class="step3-s-dot" data-index="3"></span>
+              <span class="step3-s-dot" data-index="4"></span>
+            </div>
+            <button class="step3-btn-arrow" id="step3StackNextBtn" aria-label="Next Photo">›</button>
+            <button class="step3-btn-playpause" id="step3AutoToggleBtn" title="Pause / Resume Auto-Stack">⏸</button>
+          </div>
+
+          <div style="margin-top: 14px;">
+            <button class="btn-cinematic" id="timelineToGalleryBtn">
+              <span>Continue to Memories ➔</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         STEP 4: MEMORY GALLERY
+         ===================================================================== -->
+    <section class="step-screen" id="step4">
+      <div style="width: 100%; max-width: 1100px; text-align: center;">
+        <h2 class="section-headline">Cherished Memories</h2>
+        <p class="section-subheadline">Tap any photo to view in full screen. Click ❤️ on your favorites!</p>
+
+        <div class="gallery-grid" id="galleryGrid">
+          <!-- Populated dynamically via script.js -->
+        </div>
+
+        <div>
+          <button class="btn-cinematic" id="galleryToThingsBtn">
+            <span>Next: A Little Confession ➔</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         STEP 5: 10 THINGS I LIKE ABOUT YOU
+         ===================================================================== -->
+    <section class="step-screen" id="step5">
+      <div class="glass-box" style="max-width: 620px;">
+        <h2 class="section-headline" style="font-size: 1.85rem; margin-bottom: 6px;">
+          10 Little Things I Like About You ❤️
+        </h2>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">Just a few honest thoughts from me to you.</p>
+
+        <div class="things-card-display" id="thingsDisplayBox">
+          <div class="things-counter" id="thingsCounter">01 // 10</div>
+          <div class="things-text" id="thingsText">Loading...</div>
+        </div>
+
+        <div class="things-progress-bar">
+          <div class="things-progress-fill" id="thingsProgressFill"></div>
+        </div>
+
+        <button class="btn-cinematic" id="nextThingBtn">
+          <span>Next →</span>
+        </button>
+      </div>
+    </section>
+
+
+
+    <!-- =====================================================================
+         STEP 7: MAKE A WISH (INTERACTIVE CAKE)
+         ===================================================================== -->
+    <section class="step-screen" id="step7">
+      <div class="glass-box" style="max-width: 640px;">
+        <h2 class="section-headline" style="font-size: 2.1rem; margin-bottom: 8px;">Make a Wish ✨</h2>
+        <p style="color: var(--text-muted); font-size: 1.05rem; margin-bottom: 24px;">
+          Before we continue... close your eyes and think of something truly special.
+        </p>
+
+        <!-- Step A: Type Wish -->
+        <div id="wishPrepArea">
+          <div class="wish-input-wrapper">
+            <input type="text" class="wish-input" id="birthdayWishInput"
+              placeholder="Write your secret birthday wish here... 🤫" maxlength="120" />
+          </div>
+          <button class="btn-cinematic" id="readyForCakeBtn">
+            <span>I'M READY 🎂</span>
+          </button>
+        </div>
+
+        <!-- Step B: Interactive Cake (Appears when ready) -->
+        <div class="cake-scene" id="cakeSceneContainer" title="Tap cake to blow out candles!">
+          <div class="candles-row">
+            <div class="candle-stick">
+              <div class="candle-flame"></div>
+              <div class="smoke-puff"></div>
+            </div>
+            <div class="candle-stick">
+              <div class="candle-flame"></div>
+              <div class="smoke-puff"></div>
+            </div>
+            <div class="candle-stick">
+              <div class="candle-flame"></div>
+              <div class="smoke-puff"></div>
+            </div>
+          </div>
+          <div class="cake-layer-top"></div>
+          <div class="cake-layer-bottom"></div>
+          <div class="cake-stand-plate"></div>
+        </div>
+
+        <p class="cake-hint-text" id="cakeHintText">Tap the cake to blow out candles! 🕯️</p>
+        <div id="wishGrantedMsg" style="display: none; margin-top: 15px;"></div>
+
+        <div style="margin-top: 25px;">
+          <button class="btn-cinematic" id="cakeToGiftBtn" style="display: none;">
+            <span>Open Mystery Gift ➔</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         STEP 8: MYSTERY GIFT (3D BOX UNWRAPPING)
+         ===================================================================== -->
+    <section class="step-screen" id="step8">
+      <div class="glass-box" style="max-width: 620px;">
+        <h2 class="section-headline" style="font-size: 1.9rem; margin-bottom: 8px;">A Little Mystery...</h2>
+        <p style="color: var(--text-muted); font-size: 1rem; margin-bottom: 20px;">
+          "I have one more little surprise for you..."
+        </p>
+
+        <!-- 3D Gift Box Stage -->
+        <div class="gift-stage-wrapper" id="giftStageWrapper" title="Tap to unwrap your gift!">
+          <div class="gift-box-cube" id="giftBoxCube">
+            <div class="gift-ribbon-vert"></div>
+            <div class="gift-ribbon-horiz"></div>
+            <div class="gift-bow-icon">🎀</div>
+          </div>
+        </div>
+        <p id="giftTapHint" style="color: var(--accent-gold); font-size: 0.95rem; font-weight: 600;">
+          Tap the gift to unwrap 🎁
+        </p>
+
+        <!-- Revealed Memory Content -->
+        <div class="gift-revealed-area" id="giftRevealedArea">
+          <p style="font-family: var(--font-serif); font-size: 1.25rem; color: #ffffff; margin-bottom: 20px;">
+            "Some memories are too special to stay hidden." ❤️
+          </p>
+
+          <div class="polaroid-frame">
+            <img src="./assets/img9.jpeg" alt="Special Memory Surprise" />
+            <div class="polaroid-caption">A moment just for you ✨</div>
+          </div>
+
+          <button class="btn-cinematic" id="giftToLetterBtn">
+            <span>Read What's Next ➔</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         STEP 9: SECRET LETTER (WAX SEAL & TYPEWRITER)
+         ===================================================================== -->
+    <section class="step-screen" id="step9">
+      <div class="glass-box" style="max-width: 700px;">
+        <h2 class="section-headline" style="font-size: 2.1rem; margin-bottom: 8px;">A Secret Letter</h2>
+        <p style="color: var(--text-muted); font-size: 1.05rem; margin-bottom: 25px;">
+          "There's something I wanted to say..."
+        </p>
+
+        <!-- Wax Sealed Envelope -->
+        <div class="envelope-stage" id="envelopeStage" title="Tap to break the wax seal!">
+          <div class="wax-seal-stamp">💌</div>
+        </div>
+
+        <!-- Handwritten Style Letter Sheet -->
+        <div class="letter-sheet" id="letterSheet">
+          <div class="letter-tamil-lines">
+            <span id="tamilTypewriterTarget"></span><span class="typewriter-caret"></span>
+          </div>
+
+          <div class="letter-closing-signature" id="letterSignature">
+            Happy Birthday, <span class="person-name-target">NAJIYA</span> ❤️
+          </div>
+        </div>
+
+        <div style="margin-top: 20px;">
+          <button class="btn-cinematic" id="letterToNextBtn" style="display: none;">
+            <span>One Last Secret ➔</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         STEP 10: ONE LAST SECRET (COUNTDOWN TRANSITION)
+         ===================================================================== -->
+    <section class="step-screen" id="step10">
+      <div class="countdown-box">
+        <p class="secret-phrase" id="secretPhrase1">Wait...</p>
+        <p class="secret-phrase" id="secretPhrase2">One last thing.</p>
+        <p class="secret-phrase" id="secretPhrase3" style="color: var(--accent-gold);">Look at the sky. ✨</p>
+        <div class="countdown-number" id="countdownNumber">3</div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         STEP 11: GRAND FINALE (FIREWORKS & EMOTIONAL PEAK)
+         ===================================================================== -->
+    <section class="step-screen" id="step11">
+      <div class="glass-box finale-card">
+        <h1 class="finale-h1">HAPPY BIRTHDAY</h1>
+        <div class="finale-name person-name-target">NAJIYA ❤️</div>
+
+        <div class="finale-blessings">
+          <p>“May this year bring you more smiles...”</p>
+          <p>“more beautiful memories...”</p>
+          <p style="color: var(--accent-gold); font-weight: 600;">“and everything you've been wishing for. ✨”</p>
+          <p style="margin-top: 20px; font-style: italic;">“And yes... I'm really glad I got to know you. ❤️”</p>
+        </div>
+
+        <!-- The Emotional Climax Quote -->
+        <div class="final-poem-quote">
+          <p>Some people become memories.</p>
+          <p>Some become stories.</p>
+          <p>And some...</p>
+          <p style="color: var(--accent-rose); font-weight: 600; margin-top: 8px;">
+            just become a little more special than they were supposed to. ❤️
+          </p>
+        </div>
+
+        <!-- Center Beating Heart -->
+        <div class="beating-heart-center" id="finaleBeatingHeart" title="Tap to shower love!">
+          ❤️
+        </div>
+
+        <div
+          style="font-family: var(--font-cinzel); font-size: 1.1rem; color: var(--accent-gold); margin-bottom: 28px;">
+          Happy Birthday, <span class="person-name-target">NAJIYA</span> 🎂<br />
+          <span
+            style="font-size: 0.85rem; color: var(--text-muted); text-transform: none; font-family: var(--font-sans);">
+            Made especially for you.
+          </span>
+        </div>
+
+
+        <div style="margin-top: 10px;">
+          <button class="btn-cinematic" id="finaleToStep12Btn">
+            <span>Our Best Memories & Wishes ✨ ➔</span>
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         STEP 12: BEST MEMORIES (14-PHOTO SLIDES STREAM) & BEST WISHES
+         ===================================================================== -->
+    <section class="step-screen step12-section" id="step12">
+      <div class="step12-container">
+
+        <!-- Top Header & Instructions -->
+        <div class="step12-header">
+          <span class="step12-badge">✦ CHAPTER 12 ✦</span>
+          <h2 class="step12-title">Best Memories ❤️</h2>
+          <p class="step12-subtitle">Scroll down to relive these special memories one by one ✨</p>
+        </div>
+
+        <!-- 14 Memories Slides Stream (Alternating slide-in from left and right) -->
+        <div class="step12-slides-stream" id="step12SlidesStream">
+
+          <!-- Memory 1 (from-left) -->
+          <div class="step12-slide-card from-left" data-index="0">
+            <div class="step12-img-box">
+              <img src="./assets/New folder/1 (1).jpeg" alt="Best Memory 1" loading="lazy" />
+              <span class="step12-zoom-hint">🔍 Tap to view</span>
+            </div>
+            <div class="step12-card-info">
+              <span class="step12-card-tag">✦ 01 // BEST MEMORY</span>
+              <h3 class="step12-card-caption">That Innocent Glow</h3>
+              <p class="step12-card-desc">“A quiet, gentle moment that speaks volumes without saying a word.”</p>
+            </div>
+          </div>
+
+          <!-- Memory 2 (from-right) -->
+          <div class="step12-slide-card from-right" data-index="1">
+            <div class="step12-img-box">
+              <img src="./assets/New folder/1 (2).jpeg" alt="Best Memory 2" loading="lazy" />
+              <span class="step12-zoom-hint">🔍 Tap to view</span>
+            </div>
+            <div class="step12-card-info">
+              <span class="step12-card-tag">✦ 02 // BEST MEMORY</span>
+              <h3 class="step12-card-caption">That Playful Smile</h3>
+              <p class="step12-card-desc">“Catching you mid-laugh is easily one of the best sights in the world.”</p>
+            </div>
+          </div>
+
+          <!-- Memory 3 (from-left) -->
+          <div class="step12-slide-card from-left" data-index="2">
+            <div class="step12-img-box">
+              <img src="./assets/New folder/1 (3).jpeg" alt="Best Memory 3" loading="lazy" />
+              <span class="step12-zoom-hint">🔍 Tap to view</span>
+            </div>
+            <div class="step12-card-info">
+              <span class="step12-card-tag">✦ 03 // BEST MEMORY</span>
+              <h3 class="step12-card-caption">Elegance Personified</h3>
+              <p class="step12-card-desc">“Graceful, effortless, and radiant as always.”</p>
+            </div>
+          </div>
+
+          <!-- Memory 4 (from-right) -->
+          <div class="step12-slide-card from-right" data-index="3">
+            <div class="step12-img-box">
+              <img src="./assets/New folder/1 (4).jpeg" alt="Best Memory 4" loading="lazy" />
+              <span class="step12-zoom-hint">🔍 Tap to view</span>
+            </div>
+            <div class="step12-card-info">
+              <span class="step12-card-tag">✦ 04 // BEST MEMORY</span>
+              <h3 class="step12-card-caption">Golden Hour Magic</h3>
+              <p class="step12-card-desc">“The warmth of your smile makes any day feel brighter.”</p>
+            </div>
+          </div>
+
+          <!-- Memory 5 (from-left) -->
+          <div class="step12-slide-card from-left" data-index="4">
+            <div class="step12-img-box">
+              <img src="./assets/New folder/1 (5).jpeg" alt="Best Memory 5" loading="lazy" />
+              <span class="step12-zoom-hint">🔍 Tap to view</span>
+            </div>
+            <div class="step12-card-info">
+              <span class="step12-card-tag">✦ 05 // BEST MEMORY</span>
+              <h3 class="step12-card-caption">Candid Happiness</h3>
+              <p class="step12-card-desc">“The smiles that happen naturally are always the ones that stay in the heart.”</p>
+            </div>
+          </div>
+
+          <!-- Memory 6 (from-right) -->
+          <div class="step12-slide-card from-right" data-index="5">
+            <div class="step12-img-box">
+              <img src="./assets/New folder/1 (6).jpeg" alt="Best Memory 6" loading="lazy" />
+              <span class="step12-zoom-hint">🔍 Tap to view</span>
+            </div>
+            <div class="step12-card-info">
+              <span class="step12-card-tag">✦ 06 // BEST MEMORY</span>
+              <h3 class="step12-card-caption">Serene Presence</h3>
+              <p class="step12-card-desc">“Just being around you brings a peaceful, quiet happiness.”</p>
+            </div>
+          </div>
+
+          <!-- Memory 7 (from-left) -->
+          <div class="step12-slide-card from-left" data-index="6">
+            <div class="step12-img-box">
+              <img src="./assets/New folder/1 (7).jpeg" alt="Best Memory 7" loading="lazy" />
+              <span class="step12-zoom-hint">🔍 Tap to view</span>
+            </div>
+            <div class="step12-card-info">
+              <span class="step12-card-tag">✦ 07 // BEST MEMORY</span>
+              <h3 class="step12-card-caption">Sweet Simplicity</h3>
+              <p class="step12-card-desc">“It doesn't take much to make a memory unforgettable when you're in it.”</p>
+            </div>
+          </div>
+
+          <!-- Memory 8 (from-right) -->
+          <div class="step12-slide-card from-right" data-index="7">
+            <div class="step12-img-box">
+              <img src="./assets/New folder/1 (8).jpeg" alt="Best Memory 8" loading="lazy" />
+              <span class="step12-zoom-hint">🔍 Tap to view</span>
+            </div>
+            <div class="step12-card-info">
+              <span class="step12-card-tag">✦ 08 // BEST MEMORY</span>
+              <h3 class="step12-card-caption">A Glance to Remember</h3>
+              <p class="step12-card-desc">“Some expressions stay etched in your mind for years.”</p>
+            </div>
+          </div>
+
+          <!-- Memory 9 (from-left) -->
+          <div class="step12-slide-card from-left" data-index="8">
+            <div class="step12-img-box">
+              <img src="./assets/New folder/1 (9).jpeg" alt="Best Memory 9" loading="lazy" />
+              <span class="step12-zoom-hint">🔍 Tap to view</span>
+            </div>
+            <div class="step12-card-info">
+              <span class="step12-card-tag">✦ 09 // BEST MEMORY</span>
+              <h3 class="step12-card-caption">Effortless Charm</h3>
+              <p class="step12-card-desc">“You don't even have to try, and that's what makes you so uniquely special.”</p>
+            </div>
+          </div>
+
+          <!-- Memory 10 (from-right) -->
+          <div class="step12-slide-card from-right" data-index="9">
+            <div class="step12-img-box">
+              <img src="./assets/New folder/1 (10).jpeg" alt="Best Memory 10" loading="lazy" />
+              <span class="step12-zoom-hint">🔍 Tap to view</span>
+            </div>
+            <div class="step12-card-info">
+              <span class="step12-card-tag">✦ 10 // BEST MEMORY</span>
+              <h3 class="step12-card-caption">That Pure Smile</h3>
+              <p class="step12-card-desc">“A smile that can easily light up any room you walk into.”</p>
+            </div>
+          </div>
+
+          <!-- Memory 11 (from-left) -->
+          <div class="step12-slide-card from-left" data-index="10">
+            <div class="step12-img-box">
+              <img src="./assets/New folder/1 (11).jpeg" alt="Best Memory 11" loading="lazy" />
+              <span class="step12-zoom-hint">🔍 Tap to view</span>
+            </div>
+            <div class="step12-card-info">
+              <span class="step12-card-tag">✦ 11 // BEST MEMORY</span>
+              <h3 class="step12-card-caption">Comforting Warmth</h3>
+              <p class="step12-card-desc">“Moments when conversations feel so natural and effortless.”</p>
+            </div>
+          </div>
+
+          <!-- Memory 12 (from-right) -->
+          <div class="step12-slide-card from-right" data-index="11">
+            <div class="step12-img-box">
+              <img src="./assets/New folder/1 (12).jpeg" alt="Best Memory 12" loading="lazy" />
+              <span class="step12-zoom-hint">🔍 Tap to view</span>
+            </div>
+            <div class="step12-card-info">
+              <span class="step12-card-tag">✦ 12 // BEST MEMORY</span>
+              <h3 class="step12-card-caption">Precious Little Chapters</h3>
+              <p class="step12-card-desc">“Every memory with you is a favorite chapter in this journey.”</p>
+            </div>
+          </div>
+
+          <!-- Memory 13 (from-left) -->
+          <div class="step12-slide-card from-left" data-index="12">
+            <div class="step12-img-box">
+              <img src="./assets/New folder/1 (13).jpeg" alt="Best Memory 13" loading="lazy" />
+              <span class="step12-zoom-hint">🔍 Tap to view</span>
+            </div>
+            <div class="step12-card-info">
+              <span class="step12-card-tag">✦ 13 // BEST MEMORY</span>
+              <h3 class="step12-card-caption">Unfiltered Sparkle</h3>
+              <p class="step12-card-desc">“There is a genuine spark in you that makes the world feel softer and kinder.”</p>
+            </div>
+          </div>
+
+          <!-- Memory 14 (from-right) -->
+          <div class="step12-slide-card from-right" data-index="13">
+            <div class="step12-img-box">
+              <img src="./assets/New folder/1 (14).jpeg" alt="Best Memory 14" loading="lazy" />
+              <span class="step12-zoom-hint">🔍 Tap to view</span>
+            </div>
+            <div class="step12-card-info">
+              <span class="step12-card-tag">✦ 14 // BEST MEMORY</span>
+              <h3 class="step12-card-caption">Forever Special</h3>
+              <p class="step12-card-desc">“A constant reminder of why you will always hold an irreplaceable place in my heart.”</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Grand Climax: Best Wishes Card -->
+        <div class="step12-wishes-card glass-box" id="step12WishesBox">
+          <div class="wishes-badge">✦ FINAL BIRTHDAY BLESSING ✦</div>
+          <h2 class="wishes-title">Best Wishes To You, <span class="person-name-target">NAJIYA</span> ❤️</h2>
+
+          <div class="wishes-tamil-box">
+            <p class="wishes-tamil-text">
+              “உன் முகத்தில் எப்போதும் புன்னகை மலரட்டும்...<br />
+              உன் கனவுகள் அனைத்தும் நனவாகி நிஜமாகட்டும்...<br />
+              என்றும் அமைதியும், ஆரோக்கியமும், அளவில்லா மகிழ்ச்சியும் உன்னோடு நிலைத்திருக்கட்டும்...<br />
+              என் மனமார்ந்த பிறந்தநாள் நல்வாழ்த்துகள் நஜியா! 🎂✨”
+            </p>
+          </div>
+
+          <div class="wishes-english-blessing">
+            <p>May this new year bring you everything your heart silently whispers for.</p>
+            <p>You deserve all the love, all the joy, and every piece of happiness this world has to offer.</p>
+            <p class="wishes-highlight">Happy Birthday, Najiya. Keep shining effortlessly bright! ✨</p>
+          </div>
+
+          <div class="wishes-action-row">
+            <button class="btn-cinematic" id="step12FireworksBtn" style="margin-top: 0;">
+              <span>🎆 Celebrate With Fireworks!</span>
+            </button>
+            <button class="btn-ghost" id="step12RestartBtn" style="margin-top: 0;">
+              <span>🔄 Relive The Story</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Fullscreen Photo Lightbox Modal -->
+  <div class="lightbox-modal" id="lightboxModal">
+    <div class="lightbox-content">
+      <button class="lightbox-close-btn" id="lightboxCloseBtn" aria-label="Close Lightbox">&times;</button>
+      <div class="lightbox-image-wrapper">
+        <img id="lightboxImg" src="" alt="Enlarged Memory Photo" />
+        <button class="lightbox-nav-btn prev" id="lightboxPrevBtn" aria-label="Previous Photo">‹</button>
+        <button class="lightbox-nav-btn next" id="lightboxNextBtn" aria-label="Next Photo">›</button>
+      </div>
+      <div class="lightbox-caption" id="lightboxCaption"></div>
+    </div>
+  </div>
+
+  <!-- Hidden Secret Easter Egg Modal -->
+  <div class="easter-egg-modal" id="easterEggModal">
+    <div class="easter-egg-card">
+      <div class="secret-badge">🔓 SECRET UNLOCKED</div>
+      <h3 class="secret-easter-title">Okay... 😂</h3>
+      <div class="secret-easter-msg">
+        <p>You wasn't supposed to find this!</p>
+        <p style="margin-top: 10px;">But since you did...</p>
+        <p style="color: var(--accent-rose); font-weight: 700; margin-top: 14px; font-size: 1.45rem;">
+          You're officially one of my favourite people. ❤️
+        </p>
+      </div>
+      <button class="btn-cinematic" id="closeEasterEggBtn" style="margin-top: 0;">
+        <span>Keep Our Secret 🤫</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Pure Vanilla Script -->
+  <script src="./script.js"></script>
+</body>
+
+</html>
